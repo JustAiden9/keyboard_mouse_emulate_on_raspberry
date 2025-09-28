@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard & Mouse Control</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .control { margin: 20px; }
+        button { padding: 10px 20px; margin: 5px; }
+        input { padding: 10px; width: 200px; }
+        .mouse-pad { width: 300px; height: 200px; border: 1px solid #ccc; margin: 20px auto; position: relative; }
+    </style>
+</head>
+<body>
+    <h1>Keyboard & Mouse Control</h1>
+    <div class="control">
+        <input type="text" id="textInput" placeholder="Type text to send">
+        <button onclick="sendString()">Send Text</button>
+    </div>
+    <div class="control">
+        <h2>Special Keys</h2>
+        <button onclick="sendKey('KEY_ENTER')">Enter</button>
+        <button onclick="sendKey('KEY_BACKSPACE')">Backspace</button>
+        <button onclick="sendKey('KEY_SPACE')">Space</button>
+        <button onclick="sendKey('KEY_TAB')">Tab</button>
+        <button onclick="sendKey('KEY_LEFT')">Left</button>
+        <button onclick="sendKey('KEY_RIGHT')">Right</button>
+        <button onclick="sendKey('KEY_UP')">Up</button>
+        <button onclick="sendKey('KEY_DOWN')">Down</button>
+    </div>
+    <div class="control">
+        <h2>Mouse</h2>
+        <button onclick="sendMouseClick(1)">Left Click</button>
+        <button onclick="sendMouseClick(2)">Right Click</button>
+        <br>
+        <button onclick="sendMouseMove(0, -10)">Up</button>
+        <br>
+        <button onclick="sendMouseMove(-10, 0)">Left</button>
+        <button onclick="sendMouseMove(10, 0)">Right</button>
+        <br>
+        <button onclick="sendMouseMove(0, 10)">Down</button>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
