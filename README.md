@@ -53,6 +53,14 @@ sudo ./boot.sh
 ./mouse/mouse_emulate.py 0 10 0 0
 ```
 
+## Step 3.5: Run Network Control Server (web-based control)
+
+- Allows controlling keyboard and mouse over network from a web browser
+- Install Flask: `sudo pip3 install flask`
+- Run the server: `python3 network_control_server.py`
+- On your Windows machine, open `web_control_app/index.html` in a browser
+- Update the Pi's IP in `web_control_app/app.js`
+
 # To understand what I'm doing in the background
 [Make Raspberry Pi3 as an emulator bluetooth keyboard](https://thanhle.me/make-raspberry-pi3-as-an-emulator-bluetooth-keyboard/)
 
