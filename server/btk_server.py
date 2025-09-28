@@ -89,44 +89,66 @@ class BTKbDevice():
         self.scontrol.bind((socket.BDADDR_ANY, self.P_CTRL))
         self.sinterrupt.bind((socket.BDADDR_ANY, self.P_INTR))
 
+    def close_sockets(self):
+        try:
+            if hasattr(self, 'ccontrol') and self.ccontrol:
+                self.ccontrol.close()
+        except:
+            pass
+        try:
+            if hasattr(self, 'cinterrupt') and self.cinterrupt:
+                self.cinterrupt.close()
+        except:
+            pass
+        try:
+            if hasattr(self, 'scontrol') and self.scontrol:
+                self.scontrol.close()
+        except:
+            pass
+        try:
+            if hasattr(self, 'sinterrupt') and self.sinterrupt:
+                self.sinterrupt.close()
+        except:
+            pass
+
     # listen for incoming client connections
     def listen(self):
         print("\033[0;33m7. Waiting for connections\033[0m")
 
-        # key point: use connect to get the host request for the accept() below
-        # it work, I just dont care for having been into it for 2days
-        self.setup_socket()
-        try:
-            # must be ahead of listen or 'File descriptor in bad state'
-            self.scontrol.connect((TARGET_ADDRESS, self.P_CTRL))
-        except socket.error as err:
-            # it was expect to failed
-            print("Connect failed: "+str(err))
-
-        # this may not work
-        # os.system("bluetoothctl connect " + TARGET_ADDRESS)
-
+        self.close_sockets()
         self.setup_socket()
 
         # Start listening on the server sockets
         self.scontrol.listen(5)
         self.sinterrupt.listen(5)
 
-        self.ccontrol, cinfo = self.scontrol.accept()
-        print (
-            "\033[0;32mGot a connection on the control channel from %s \033[0m" % cinfo[0])
+        try:
+            self.ccontrol, cinfo = self.scontrol.accept()
+            print (
+                "\033[0;32mGot a connection on the control channel from %s \033[0m" % cinfo[0])
 
-        self.cinterrupt, cinfo = self.sinterrupt.accept()
-        print (
-            "\033[0;32mGot a connection on the interrupt channel from %s \033[0m" % cinfo[0])
+            self.cinterrupt, cinfo = self.sinterrupt.accept()
+            print (
+                "\033[0;32mGot a connection on the interrupt channel from %s \033[0m" % cinfo[0])
+        except OSError as err:
+            print("Accept failed: " + str(err))
+            # Retry after a short delay
+            time.sleep(1)
+            self.listen()
 
     # send a string to the bluetooth host machine
     def send_string(self, message):
         try:
             self.cinterrupt.send(bytes(message))
         except OSError as err:
-            error(err)
-            self.listen()
+            error("Send failed: " + str(err))
+            print("Attempting to reconnect...")
+            try:
+                self.listen()
+                # Retry send after reconnection
+                self.cinterrupt.send(bytes(message))
+            except:
+                error("Reconnection failed")
 
 
 class BTKbService(dbus.service.Object):
